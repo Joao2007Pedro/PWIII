@@ -1,7 +1,6 @@
 const result = document.querySelector(".result");
 const buttons = document.querySelectorAll(".buttons button");
 
-
 let numeroAtual = "";
 let firstOperand = null;
 let operador = null;
@@ -27,7 +26,6 @@ function addDigit(digit) {
 
 function setOperador(newOperador) {
     if (numeroAtual) {
-
         firstOperand = parseFloat(numeroAtual.replace(",", "."));
         numeroAtual = "";
     }
@@ -35,56 +33,26 @@ function setOperador(newOperador) {
     operador = newOperador;
 }
 
-function calcular() {
+async function calcular() {
     if (operador == null || firstOperand == null) return;
     let secondOperand = parseFloat(numeroAtual.replace(",", "."));
-    let resultValue;
-
-    switch (operador) {
-        case "+":
-            resultValue = firstOperand + secondOperand;
-            break;
-        case "-":
-            resultValue = firstOperand - secondOperand;
-            break;
-        case "*":
-            resultValue = firstOperand * secondOperand;
-            break;
-        case "/":
-            resultValue = firstOperand / secondOperand;
-            break;
-        default:
-            return;
-        
-        }
-
-        if (resultValue.toString().split(".")[1]?.length > 5) {
-            numeroAtual = parseFloat(resultValue.toFixed(5)).toString();    
-        } else {
-            numeroAtual = resultValue.toString();
-        }
     
-
-    operador = null;
-    firstOperand = null;
-    restart = true;
-    percentageValue = null;
-    updateResult();
-}
-
-function setPercentage() {
-    let result = parseFloat(numeroAtual) / 100;
-
-    if (["+", "-"].includes(operador)) {
-        result = result * (firstOperand || 1);
+    try {
+        const response = await fetch("http://localhost:3000/calcular", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ firstOperand, secondOperand, operador })
+        });
+        const data = await response.json();
+        
+        numeroAtual = data.result.toString();
+        operador = null;
+        firstOperand = null;
+        restart = true;
+        updateResult();
+    } catch (error) {
+        console.error("Erro ao calcular:", error);
     }
-
-    if (result.toString().split(".")[1]?.length > 5) {
-        result = result.toFixed(5).toString();
-    }    
-
-    numeroAtual = result.toString();
-    updateResult();
 }
 
 function clearCalcular() {
@@ -93,7 +61,6 @@ function clearCalcular() {
     operador = null;
     updateResult(true);
 }
-
 
 buttons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -112,6 +79,5 @@ buttons.forEach((button) => {
                 updateResult();
             }
         }
-        
     });
 });
