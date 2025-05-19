@@ -17,22 +17,41 @@ const times = [
     { nome: "Inter de Limeira", pontos: 7, jogos: 12, vitorias: 0, empates: 7, derrotas: 5, gp: 9, gc: 19, sg: -10 }
   ];
   
+  const grupos = {
+    A: ["Santos", "Portuguesa", "São Bernardo", "Inter de Limeira"],
+    B: ["Palmeiras", "Guarani", "Água Santa", "Ponte Preta"],
+    C: ["Corinthians", "Mirassol", "Bragantino", "Botafogo-SP"],
+    D: ["São Paulo", "Novorizontino", "Velo Clube", "Noroeste"]
+  };
+
+  function getGrupoDoTime(nome) {
+    for (const grupo in grupos) {
+      if (grupos[grupo].includes(nome)) {
+        return grupo;
+      }
+    }
+    return "N/A";
+  }
+  
+
 
   const tabela = document.getElementById("tabela-times");
 
   times.forEach(time => {
     const linha = document.createElement("tr");
     linha.innerHTML = `
-      <td>${time.nome}</td>
-      <td>${time.pontos}</td>
-      <td>${time.jogos}</td>
-      <td>${time.vitorias}</td>
-      <td>${time.empates}</td>
-      <td>${time.derrotas}</td>
-      <td>${time.gp}</td>
-      <td>${time.gc}</td>
-      <td>${time.sg}</td>
-    `;
+    <td>${getGrupoDoTime(time.nome)}</td>
+    <td>${time.nome}</td>
+    <td>${time.pontos}</td>
+    <td>${time.jogos}</td>
+    <td>${time.vitorias}</td>
+    <td>${time.empates}</td>
+    <td>${time.derrotas}</td>
+    <td>${time.gp}</td>
+    <td>${time.gc}</td>
+    <td>${time.sg}</td>  
+`;
+
     tabela.appendChild(linha);
   });
 
